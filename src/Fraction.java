@@ -18,7 +18,9 @@ public class Fraction {
 
     @Override
     public String toString() {
-        return "" + getNumerator() + '/' + getDenominator();
+
+        // adapt toString() method to print integers with numerator only
+        return (this.getDenominator() == 1) ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();
     }
 
     public int getNumerator() {
@@ -65,7 +67,7 @@ public class Fraction {
 
     }
 
-    // methods for add, subtract divide
+    // methods for add, subtract & divide
 
     public Fraction add(Fraction other) {
 

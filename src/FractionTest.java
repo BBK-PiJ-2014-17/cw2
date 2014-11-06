@@ -45,8 +45,22 @@ public class FractionTest {
 		// test absolute value
 		Fraction r = new Fraction(19,17);
 		Fraction s = new Fraction(-19,17);
+		//System.out.println(r.absValue().toString());
 		//System.out.println(s.absValue().toString());
-		if (!r.equals(s.absValue())) System.out.println("Absolute Value failed");
+		if (!r.equals(s.absValue()) || !r.equals(r.absValue())) System.out.println("Absolute Value failed");
+
+		// test negation
+		Fraction t = new Fraction(7,3);
+		Fraction u = new Fraction(7,-3);
+		//System.out.println(t.negate().toString());
+		//System.out.println(u.negate().toString());
+		if (!t.equals(u.negate()) || !u.equals(t.negate())) System.out.println("Absolute Value failed");
+
+		// test toString with integers
+		Fraction v = new Fraction(8,2);	//	expected "4"
+		Fraction w = new Fraction(8,3);	//	expected "8/3"
+		//System.out.println(v.toString());
+		//System.out.println(w.toString());
 
     }
 
