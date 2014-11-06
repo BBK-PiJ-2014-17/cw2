@@ -62,6 +62,7 @@ public class Fraction {
         int num = this.getNumerator() * other.getNumerator();
         int denom = this.getDenominator() * other.getDenominator();
         return new Fraction(num, denom);
+
     }
 
     // methods for add, subtract divide
@@ -71,6 +72,32 @@ public class Fraction {
         int num = (this.getNumerator() * other.getDenominator()) + (other.getNumerator() * this.getDenominator());
         int denom = this.getDenominator() * other.getDenominator();
         return new Fraction(num, denom);
+
+    }
+
+    public Fraction subtract(Fraction other) {
+
+        int num = (this.getNumerator() * other.getDenominator()) - (other.getNumerator() * this.getDenominator());
+        int denom = this.getDenominator() * other.getDenominator();
+        return new Fraction(num, denom);
+
+    }
+
+    public Fraction divide(Fraction other) {
+
+        Fraction recip = new Fraction(other.getDenominator(), other.getNumerator()); // reciprocal fraction
+        return this.multiply(recip);
+
+    }
+
+    public Fraction absValue() {
+
+        return new Fraction(Math.abs(this.getNumerator()), Math.abs(getDenominator()));
+    }
+
+    public Fraction negate() {
+
+        return new Fraction(-1 * this.getNumerator(), this.getDenominator());
     }
 
     private int myGcd(int a, int b) {
