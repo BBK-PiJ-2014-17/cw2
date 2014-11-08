@@ -19,7 +19,7 @@ public class Fraction {
     @Override
     public String toString() {
 
-        // adapt toString() method to print integers with numerator only
+        // adapted toString() method to print integers with numerator only
         return (this.getDenominator() == 1) ? "" + getNumerator() : "" + getNumerator() + '/' + getDenominator();
     }
 
@@ -86,6 +86,8 @@ public class Fraction {
     }
 
     public Fraction divide(Fraction other) {
+
+        // check divide bby zero...
 
         Fraction recip = new Fraction(other.getDenominator(), other.getNumerator()); // reciprocal fraction
         return this.multiply(recip);
