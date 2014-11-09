@@ -60,15 +60,24 @@ public class FractionCalculator {
 
     // main class methods
 
-    public Fraction evaluate(Fraction fraction, String inputString) {
+    public Fraction evaluate(Fraction fraction, String inputString) {   //  if fraction not set, use current value of calculator
+
+        /**
+         * Method Structure:
+         *
+         *
+         */
+
+        // variables
 
         int num, denom, idx; //  values for return fraction and operation parsing
-        Fraction ret;   //  return fraction
+        Fraction ret = new Fraction(0,1);   //  return fraction to be determined
         String[] ops;   //  array to hold input operations and fractions
 
         setValue(fraction);  //  initialise calculator with given value
 
         // check if the input string contains a space
+        // split into tokens
 
         if(inputString.contains(" ")) {
             ops = inputString.split(" ");
@@ -81,8 +90,11 @@ public class FractionCalculator {
 
         for (String op : ops) {
 
-            System.out.println(op);
-            System.out.println(op.length());
+            // for each token, check if it is an operation of fraction
+            // if an operation is found, store this in the calculator
+            // if an fraction is found, perform the stored operation on the current value and read value
+
+            System.out.println("Operation: " + op);
 
             // parse input for operations or numbers
             // first check for / as this has multiple meanings
@@ -91,22 +103,28 @@ public class FractionCalculator {
 
                 if (op.length() == 1) { //  is divide operation
 
-                    if (!this.hasOperation) {    //  no current operation present
-                        this.setOperation(op.charAt(0));    //  okay to set
-                    } else {    //  input error, operation already specified
-                        System.out.println("Input error: More than one operation specified consecutively");
-                        this.resetOperation();
-                    }
+                    storeOperation(op.charAt(0));
 
                 } else {    //  is fraction or input error
 
-                    try {
-                        idx = op.indexOf("/");
-                        num = Integer.parseInt(op.substring(0, idx)); // first number
-                        denom = Integer.parseInt(op.substring(idx+1,op.length())); // second number
+                    // catch index out of bounds exceptions in case of invalid input
 
-                        if (this.hasOperation)
-                            ret = performOperation(new Fraction(num, denom));
+                    try {
+
+                        // find index of / in input and determine numerator and denominator
+
+                        idx = op.indexOf("/");
+                        num = Integer.parseInt(op.substring(0, idx)); // number before /
+                        denom = Integer.parseInt(op.substring(idx+1,op.length())); // number after /
+
+                        // if there is an operation stored, perform that operation on the current and read values
+                        // else setup current value to input
+
+                        if (this.hasOperation) {
+                            ret = performOperation(new Fraction(num, denom));   //  update return value with value of operation
+                        } else {
+                            ret = new Fraction(num, denom); //  set current value of calculator to input
+                        }
 
                     } catch (IndexOutOfBoundsException e) { //  if the / operation is first or last the substring calls with
                                                             //  raise a index exception. It also means the input is invalid
@@ -114,11 +132,14 @@ public class FractionCalculator {
                     }
                 }
 
-            } else if (op.contains("+")) {  //  addition operator
+            // catch all 1 digit operators
 
-            } else if (op.contains("*")) {  //  multiplication operator
+            } else if ((op.contains("+") || op.contains("-")
+                        || op.contains("*") || op.toLowerCase().contains("a")
+                        || op.toLowerCase().contains("n") || op.toLowerCase().contains("c")
+                        || op.toLowerCase().contains("q")) && op.length() == 1) {  //  valid operator
 
-            } else if (op.contains("-")) {  //   subtraction operator
+                storeOperation(op.charAt(0));
 
             } else {    //  other operators or integers
 
@@ -136,7 +157,17 @@ public class FractionCalculator {
 
         }
 
-        return new ret;
+        return ret;
+    }
+
+    private void storeOperation(char c) {
+
+        if (!this.hasOperation) {    //  no current operation present
+            this.setOperation(c);    //  okay to set
+        } else {    //  input error, operation already specified
+            System.out.println("Input error: More than one operation specified consecutively");
+            this.resetOperation();
+        }
     }
 
     private Fraction performOperation(Fraction f) {

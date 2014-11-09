@@ -29,7 +29,8 @@ public class FractionCalculatorTest {
 
         //
 
-        fc.evaluate(new Fraction(0,1), "2");
+        //fc.evaluate(new Fraction(0,1), "2");
+        System.out.println(fc.evaluate(new Fraction(0,1), "2/3 + 4/3").toString());
 
     }
 
