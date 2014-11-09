@@ -134,12 +134,19 @@ public class FractionCalculator {
                     }
                 }
 
-            // catch all 1 digit operators
-
             } else if ((op.contains("+") || op.contains("-")
-                        || op.contains("*") || op.toLowerCase().contains("a")
-                        || op.toLowerCase().contains("n") || op.toLowerCase().contains("c")
-                        || op.toLowerCase().contains("q")) && op.length() == 1) {  //  valid operator
+                        || op.contains("*")) && op.length() == 1) {  // binary operations
+
+                storeOperation(op.charAt(0));
+
+            } else if ((op.toLowerCase().contains("a")
+                        || op.toLowerCase().contains("n")) && op.length() == 1) {  //  unary operations
+
+                storeOperation(op.charAt(0));
+                ret = performOperation(getValue());
+
+            }  else if (( op.toLowerCase().contains("c")
+                        || op.toLowerCase().contains("q")) && op.length() == 1) {  //  program commands
 
                 storeOperation(op.charAt(0));
 
@@ -179,19 +186,34 @@ public class FractionCalculator {
 
             case '+':
                 resetOperation();
-                return this.value.add(f);
+                return getValue().add(f);
 
             case '-':
                 resetOperation();
-                return this.value.subtract(f);
+                return getValue().subtract(f);
 
             case '/':
                 resetOperation();
-                return this.value.divide(f);
+                return getValue().divide(f);
 
             case '*':
                 resetOperation();
-                return this.value.multiply(f);
+                return getValue().multiply(f);
+
+            case 'a':
+                resetOperation();
+                return f.absValue();
+
+            case 'n':
+                resetOperation();
+                return f.negate();
+
+            case 'c':
+                resetFractionCalculator();
+                return new Fraction(0,1);
+
+            case 'q':
+                return new Fraction(0,1);
 
             default:
                 System.out.println("Invalid Operation");
