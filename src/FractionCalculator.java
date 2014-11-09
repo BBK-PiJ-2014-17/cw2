@@ -103,6 +103,8 @@ public class FractionCalculator {
 
                 if (op.length() == 1) { //  is divide operation
 
+                    System.out.println("Storing operation /");
+
                     storeOperation(op.charAt(0));
 
                 } else {    //  is fraction or input error
@@ -153,6 +155,7 @@ public class FractionCalculator {
                 }
             }
 
+            setValue(ret);  //  update current value of calculator
             System.out.println(this.toString()); // print current state of calculator
 
         }
@@ -175,15 +178,19 @@ public class FractionCalculator {
         switch (this.operation) {
 
             case '+':
+                resetOperation();
                 return this.value.add(f);
 
             case '-':
+                resetOperation();
                 return this.value.subtract(f);
 
             case '/':
+                resetOperation();
                 return this.value.divide(f);
 
             case '*':
+                resetOperation();
                 return this.value.multiply(f);
 
             default:

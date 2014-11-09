@@ -4,11 +4,17 @@
  */
 public class FractionCalculatorTest {
 
+    // create fraction calculator object
+
+    static FractionCalculator fc = new FractionCalculator();
+
     public static void main(String[] args) {
 
-        // create fraction calculator object
+        String str; //  input string for testing
+        Fraction res;   //  expected test result
 
-        FractionCalculator fc = new FractionCalculator();
+        // introduce test module
+
         System.out.println();
         System.out.println("*****************************************");
         System.out.println("*****FRACTION CALCULATOR TEST MODULE*****");
@@ -27,11 +33,21 @@ public class FractionCalculatorTest {
 
         System.out.println(fc.toString());
 
-        //
+        // check addition
 
-        //fc.evaluate(new Fraction(0,1), "2");
-        System.out.println(fc.evaluate(new Fraction(0,1), "2/3 + 4/3").toString());
+        str = "2/3 + 4/3";  //  = 2/1
+        res = new Fraction(2,1);
 
+        testOperation(str, res);
+
+    }
+
+    static private void testOperation(String s, Fraction r) {
+
+        System.out.println("Performing Operation:\t\t" + s);
+        System.out.println("Expected Result:\t\t" + r);
+        System.out.println();
+        System.out.println("Equal: " + r.equals(fc.evaluate(new Fraction(0,1), s)));
     }
 
 }
