@@ -76,7 +76,9 @@ public class FractionCalculator {
         if (!this.hasOperation) {       // no current operation present
             this.setOperation(c);       // okay to set
         } else {                        // input error, operation already specified
-            System.out.println("Input error: More than one operation specified consecutively");
+            System.out.println();
+            System.out.println("*** Input error: More than one operation specified consecutively ***");
+            System.out.println();
             this.resetOperation();
         }
     }
@@ -111,8 +113,10 @@ public class FractionCalculator {
 
         // loop thought operations and fractions and perform necessary operation
 
-        for (String op : ops) { // array iteration
-
+        //for (String op : ops) { // array iteration
+        int i = 0;
+        while (i<ops.length) {
+            String op = ops[i];
             // for each token, check if it is an operation of fraction, determined by spacing and '/'
             // if an operation is found, perform unary operations and store binary operations in the calculator
             // if an fraction is found and a stored operation is present, perform that operation on the current
@@ -131,10 +135,11 @@ public class FractionCalculator {
 
                 } else {                    // is fraction or input error
 
-                    // catch index out of bounds exceptions in case of invalid input
+                    // catch number format exceptions in case of invalid input
                     // if a '/' has been entered as the first or last character of the input string, it is an invalid
                     // command. using the parsing below, this would cause in index exception when calculating the
-                    // num and denom of the fraction. if no error, fraction formed.
+                    // num and denom of the fraction, and in turn the parseInt method would fail raising a number
+                    // format exception. if no error, fraction formed.
 
                     try {
 
@@ -153,10 +158,12 @@ public class FractionCalculator {
                             ret = new Fraction(num, denom);                     // set current value of calculator to input
                         }
 
-                    } catch (IndexOutOfBoundsException e) { // if the '/' operation is first or last the substring calls with
+                    } catch (NumberFormatException e) { // if the '/' operation is first or last the substring calls with
                                                             // raise a index exception. It also means the input is invalid
                                                             // value return will be zero by default
-                        System.out.println("Invalid input, incorrect usage of '/' operator.");
+                        System.out.println();
+                        System.out.println("*** Invalid input, incorrect usage of '/' operator. ***");
+                        System.out.println();
                     }
                 }
 
@@ -210,14 +217,16 @@ public class FractionCalculator {
 
                 } catch (NumberFormatException e) {                 // if the input is not a number, it is invalid
                                                                     // return value is zero by default
-                    System.out.println("Invalid input: " + op);
+                    System.out.println();
+                    System.out.println("*** Invalid input: " + op + " ***");
+                    System.out.println();
                 }
 
             }
 
-            setValue(ret);                                      //.update current value of calculator before next operation
+            setValue(ret);                                      //  update current value of calculator before next operation
             System.out.println("\t\t>> " + this.toString());     // print current state of calculator
-
+            i++;
         }
 
         return ret; // return result of all operations
@@ -261,7 +270,9 @@ public class FractionCalculator {
                 return new Fraction(0,1);
 
             default:
-                System.out.println("Invalid Operation");
+                System.out.println();
+                System.out.println("*** Invalid Operation ***");
+                System.out.println();
                 resetFractionCalculator();
                 return new Fraction(0,1);   //  return zero fraction
 
