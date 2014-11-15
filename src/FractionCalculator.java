@@ -2,28 +2,38 @@
  * Created by Basil on 06/11/2014.
  * FractionCalculator object
  */
+
 public class FractionCalculator {
-    private Fraction value;
-    private char operation;
-    private boolean hasOperation;
+
+    /* class variables */
+
+    private Fraction value;         // the current value of the calculator, initialised to zero.
+    private char operation;         // the current operation of the calculator
+    private boolean hasOperation;   // false if there is no saved operation. When false, any fraction read from the
+                                    // command line will be stored in the current value of the calculator
+
+    /* constructors */
 
     public FractionCalculator() {
-        this.value = new Fraction(0,1); //  initialise calculator value to zero
-        this.operation = '0';   // zero represents nil operation
-        this.hasOperation = false;   // start without operation
+        this.value = new Fraction(0,1); // initialise calculator value to zero
+        this.operation = '0';           // zero represents null operation
+        this.hasOperation = false;      // start without operation
     }
+
+    /* class methods */
+    // override object toString method
 
     @Override
     public String toString() {
 
-        String str = (!this.hasOperation) ? "nil" : "" + this.operation;   //  if no operation print nil
+        String str = (!this.hasOperation) ? "null" : "" + this.operation;   //  if no operation print null
 
         // represent FractionCalculator state by printing current value and saved operation
         return "Calculator value: " + this.value.toString()
                 + ", operation: " + str;
     }
 
-    // getter and setters
+    /* getter and setters */
 
     public Fraction getValue() {
         return this.value;
@@ -42,10 +52,10 @@ public class FractionCalculator {
         this.hasOperation = true;
     }
 
-    // reset methods
+    /* reset methods */
 
     private void resetOperation() {
-        this.operation = '0';    // nil operation
+        this.operation = '0';    // null operation
         this.hasOperation = false;
     }
 
@@ -58,9 +68,22 @@ public class FractionCalculator {
         resetValue();
     }
 
-    // main class methods
+    /* main class methods */
+    // store given operation. if an operation is already present in the calculator, the input is invalid.
 
-    public Fraction evaluate(Fraction fraction, String inputString) {   //  if fraction not set, use current value of calculator
+    private void storeOperation(char c) {
+
+        if (!this.hasOperation) {       // no current operation present
+            this.setOperation(c);       // okay to set
+        } else {                        // input error, operation already specified
+            System.out.println("Input error: More than one operation specified consecutively");
+            this.resetOperation();
+        }
+    }
+
+    // evaluate input string of operations and fractions, based on current value of calculator
+
+    public Fraction evaluate(Fraction fraction, String inputString) {
 
         /**
          * Method Structure:
@@ -70,119 +93,135 @@ public class FractionCalculator {
 
         // variables
 
-        int num, denom, idx; //  values for return fraction and operation parsing
+        int num, denom, idx;                //  values for return fraction and operation parsing
         Fraction ret = new Fraction(0,1);   //  return fraction to be determined
-        String[] ops;   //  array to hold input operations and fractions
+        String[] ops;                       //  array to hold input operations and fractions
 
-        setValue(fraction);  //  initialise calculator with given value
+        setValue(fraction);                 //  initialise calculator with given value
 
+        // split input into tokens
         // check if the input string contains a space
-        // split into tokens
 
-        if(inputString.contains(" ")) {
+        if(inputString.contains(" ")) {     // split input into operations and fractions
             ops = inputString.split(" ");
-        } else {    //  invalid input?
+        } else {                            // single operation
             ops = new String[1];
             ops[0] = inputString;
         }
 
-        // loop thought operations and numbers in input string
+        // loop thought operations and fractions and perform necessary operation
 
-        for (String op : ops) {
+        for (String op : ops) { // array iteration
 
-            // for each token, check if it is an operation of fraction
-            // if an operation is found, store this in the calculator
-            // if an fraction is found, perform the stored operation on the current value and read value
+            // for each token, check if it is an operation of fraction, determined by spacing and '/'
+            // if an operation is found, perform unary operations and store binary operations in the calculator
+            // if an fraction is found and a stored operation is present, perform that operation on the current
+            // value and fraction, else store the fraction
 
-            System.out.println("Operation: " + op);
+            System.out.println("Token: " + op);
 
-            // parse input for operations or numbers
-            // first check for / as this has multiple meanings
+            // parse token for operations or fractions
+            // first check for / as this has multiple meanings and determines fractions
 
-            if (op.contains("/")) { // op is fraction or divide operation
+            if (op.contains("/")) {         // op is fraction or divide operation
 
-                if (op.length() == 1) { //  is divide operation
+                if (op.length() == 1) {     // op is divide operation
 
-                    System.out.println("Storing operation /");
+                    System.out.println("Storing operation '/'");
 
                     storeOperation(op.charAt(0));
 
-                } else {    //  is fraction or input error
+                } else {                    // is fraction or input error
 
                     // catch index out of bounds exceptions in case of invalid input
+                    // if a '/' has been entered as the first or last character of the input string, it is an invalid
+                    // command. using the parsing below, this would cause in index exception when calculating the
+                    // num and denom of the fraction. if no error, fraction formed.
 
                     try {
 
-                        // find index of / in input and determine numerator and denominator
+                        // find index of '/' in input to determine numerator and denominator values
 
-                        idx = op.indexOf("/");
-                        num = Integer.parseInt(op.substring(0, idx)); // number before /
-                        denom = Integer.parseInt(op.substring(idx+1,op.length())); // number after /
+                        idx = op.indexOf("/");                                      // index of '/' character
+                        num = Integer.parseInt(op.substring(0, idx));               // number before '/'
+                        denom = Integer.parseInt(op.substring(idx+1,op.length()));  // number after '/'
 
-                        // if there is an operation stored, perform that operation on the current and read values
+                        // if there is an operation stored, perform that operation on the current and input values
                         // else setup current value to input
 
                         if (this.hasOperation) {
-                            ret = performOperation(new Fraction(num, denom));   //  update return value with value of operation
+                            ret = performOperation(new Fraction(num, denom));   // update return value with value of operation
                         } else {
-                            ret = new Fraction(num, denom); //  set current value of calculator to input
+                            ret = new Fraction(num, denom);                     // set current value of calculator to input
                         }
 
-                    } catch (IndexOutOfBoundsException e) { //  if the / operation is first or last the substring calls with
-                                                            //  raise a index exception. It also means the input is invalid
-                        System.out.println("Invalid input, / operator in incorrect position");
+                    } catch (IndexOutOfBoundsException e) { // if the '/' operation is first or last the substring calls with
+                                                            // raise a index exception. It also means the input is invalid
+                                                            // value return will be zero by default
+                        System.out.println("Invalid input, incorrect usage of '/' operator.");
                     }
                 }
 
+            // other operations
+
             } else if ((op.contains("+") || op.contains("-")
-                        || op.contains("*")) && op.length() == 1) {  // binary operations
+                        || op.contains("*")) && op.length() == 1) {                 // binary operations
+
+                // if the operation is a recognised mathematical binary operation and is only 1 character long
+                // then the operation is valid and should be stored in the calculator
 
                 storeOperation(op.charAt(0));
 
-            } else if ((op.toLowerCase().contains("a")
-                        || op.toLowerCase().contains("n")) && op.length() == 1) {  //  unary operations
+            } else if (((op.toLowerCase().contains("a")
+                        || op.toLowerCase().contains("n")) && op.length() == 1)
+                        || ((op.contains("abs")
+                        || op.contains("neg")) && op.length() == 3)) {              // unary operations
 
-                storeOperation(op.charAt(0));
+                // if the operation is a recognised mathematical unary operation in either the single character
+                // or 3 character forms, perform this operation on the stored value of the calculator
+
+                storeOperation(op.charAt(0));           // store first character of operation, valid for 3 letter forms
                 ret = performOperation(getValue());
 
-            }  else if (( op.toLowerCase().contains("c")
-                        || op.toLowerCase().contains("q")) && op.length() == 1) {  //  program commands
+            }  else if (((op.toLowerCase().contains("c")
+                        || op.toLowerCase().contains("q")) && op.length() == 1)
+                        || (op.contains("clear") && op.length() == 5)
+                        || (op.contains("quit") && op.length() == 4)) {             // program commands
+
+                // system command
 
                 storeOperation(op.charAt(0));
 
-            } else {    //  other operators or integers
+            } else {                                                                // integer or invalid
 
-                // if op have length 1, then it is either an operation, and integer or invalid
+                // if one of the above operations has not been found, the only remaining options are that the input is
+                // an integer, or an invalid input.
 
-                if (op.length() == 1) { //   has length one
+                // if the input is a number, the value can be parsed into an integer
+                // otherwise the operation is invalid. use a try catch block to find number format exceptions
 
-                    if (Character.isDigit(op.charAt(0)))    //  and is a number
-                        this.value = new Fraction(Integer.parseInt(op), 1); // store number in calculator value
-
+                try {
+                    ret = new Fraction(Integer.parseInt(op), 1);    // whole number fraction form
+                } catch (NumberFormatException e) {                 // if the input is not a number, it is invalid
+                                                                    // return value is zeero by default
+                    System.out.println("Invalid input: " + op);
                 }
+
             }
 
-            setValue(ret);  //  update current value of calculator
-            System.out.println(this.toString()); // print current state of calculator
+            setValue(ret);                          //.update current value of calculator before next operation
+            System.out.println(this.toString());    // print current state of calculator
 
         }
 
-        return ret;
+        return ret; // return result of all operations
     }
 
-    private void storeOperation(char c) {
-
-        if (!this.hasOperation) {    //  no current operation present
-            this.setOperation(c);    //  okay to set
-        } else {    //  input error, operation already specified
-            System.out.println("Input error: More than one operation specified consecutively");
-            this.resetOperation();
-        }
-    }
+    // perform given operation on fraction class
 
     private Fraction performOperation(Fraction f) {
 
-        switch (this.operation) {
+        switch (getOperation()) {
 
             case '+':
                 resetOperation();
@@ -217,6 +256,7 @@ public class FractionCalculator {
 
             default:
                 System.out.println("Invalid Operation");
+                resetFractionCalculator();
                 return new Fraction(0,1);   //  return zero fraction
 
         }
