@@ -118,7 +118,7 @@ public class FractionCalculator {
             // if an fraction is found and a stored operation is present, perform that operation on the current
             // value and fraction, else store the fraction
 
-            System.out.println("Token: " + op);
+            System.out.println("\t>> Token: " + op);
 
             // parse token for operations or fractions
             // first check for / as this has multiple meanings and determines fractions
@@ -126,8 +126,6 @@ public class FractionCalculator {
             if (op.contains("/")) {         // op is fraction or divide operation
 
                 if (op.length() == 1) {     // op is divide operation
-
-                    System.out.println("Storing operation '/'");
 
                     storeOperation(op.charAt(0));
 
@@ -201,16 +199,24 @@ public class FractionCalculator {
                 // otherwise the operation is invalid. use a try catch block to find number format exceptions
 
                 try {
-                    ret = new Fraction(Integer.parseInt(op), 1);    // whole number fraction form
+
+                    Fraction temp = new Fraction(Integer.parseInt(op), 1);
+
+                    if (this.hasOperation) {
+                        ret = performOperation(temp);   // perform operation with integer
+                    } else {
+                        ret = temp;                     // set current value of calculator to input
+                    }
+
                 } catch (NumberFormatException e) {                 // if the input is not a number, it is invalid
-                                                                    // return value is zeero by default
+                                                                    // return value is zero by default
                     System.out.println("Invalid input: " + op);
                 }
 
             }
 
-            setValue(ret);                          //.update current value of calculator before next operation
-            System.out.println(this.toString());    // print current state of calculator
+            setValue(ret);                                      //.update current value of calculator before next operation
+            System.out.println("\t\t>> " + this.toString());     // print current state of calculator
 
         }
 

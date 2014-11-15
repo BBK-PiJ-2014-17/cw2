@@ -2,6 +2,7 @@
  * Created by Basil on 06/11/2014.
  * FractionCalculator Tester class
  */
+
 public class FractionCalculatorTest {
 
     // create fraction calculator object
@@ -10,8 +11,8 @@ public class FractionCalculatorTest {
 
     public static void main(String[] args) {
 
-        String str; //  input string for testing
-        Fraction res;   //  expected test result
+        String str;     // input string for testing
+        Fraction res;   // expected test result
 
         // introduce test module
 
@@ -31,58 +32,88 @@ public class FractionCalculatorTest {
 
         // print current state of Fraction Calculator
 
-        System.out.println(fc.toString());
+        System.out.println("Initial state of calculator:");
+        System.out.println("\t" + fc.toString());
+        System.out.println();
 
         // test addition
 
+        System.out.println("\t***ADDITION***");
         str = "2/3 + 4/3";  //  = 2/1
         res = new Fraction(2,1);
 
-        //testOperation(str, res);
+        testOperation(str, res);
 
         // test subtraction
 
+        System.out.println("\t***SUBTRACTION***");
         str = "2/3 - 4/7";  //  = 2/21
         res = new Fraction(2,21);
 
-        //testOperation(str, res);
+        testOperation(str, res);
 
         // test multiplication
 
+        System.out.println("\t***MULTIPLICATION***");
         str = "2/3 * 1/4";  //  = 1/6
         res = new Fraction(1,6);
 
-        //testOperation(str, res);
+        testOperation(str, res);
 
         // test division
 
+        System.out.println("\t***DIVISION***");
         str = "5/8 / 1/3";  //  = 15/8
         res = new Fraction(15,8);
 
-        //testOperation(str, res);
+        testOperation(str, res);
 
         // test absolute value
 
+        System.out.println("\t***ABSOLUTE***");
         str = "-5/8 a";  //  = 5/8
         res = new Fraction(5,8);
 
-        //testOperation(str, res);
+        testOperation(str, res);
 
         // test absolute value
 
+        System.out.println("\t***NEGATION***");
         str = "5/8 n";  //  = -5/8
         res = new Fraction(-5,8);
 
         testOperation(str, res);
 
+        // test combinations
+
+        System.out.println("\t***COMBINATION TEST 1***");
+        str = "3/4 + 3/4 / 5 * 1/2 n - 1";  //  = -13/10
+        res = new Fraction(23,-20);
+
+        testOperation(str, res);
+
+        System.out.println("\t***COMBINATION TEST 2***");
+        str = "1/2 - 1 a * 2/1 * 100";  //  = 100
+        res = new Fraction(100,1);
+
+        testOperation(str, res);
+
+        // test error handling
+
+
+
+
     }
+
+    // test method to confirm if expected result equals actual output of calculator
 
     static private void testOperation(String s, Fraction r) {
 
         System.out.println("Performing Operation:\t\t" + s);
-        System.out.println("Expected Result:\t\t" + r);
+        System.out.println("Expected Result:\t\t\t" + r);
         System.out.println();
-        System.out.println("Equal: " + r.equals(fc.evaluate(new Fraction(0,1), s)));
+        System.out.println("\t>> Equal: " + r.equals(fc.evaluate(new Fraction(0,1), s)));
+        System.out.println();
     }
 
 }
