@@ -3,11 +3,13 @@
  * FractionCalculator Tester class
  */
 
+import java.util.Scanner;
+
 public class FractionCalculatorTest {
 
     // create fraction calculator object
 
-    static FractionCalculator fc = new FractionCalculator();
+    static FractionCalculator fc = new FractionCalculator();    // remove static
 
     public static void main(String[] args) {
 
@@ -100,8 +102,46 @@ public class FractionCalculatorTest {
 
         // test error handling
 
+        System.out.println("\t***ERROR HANDLING***");
+        res = new Fraction(0,1);
+
+        str = "1/2 - - 2/1";        // double operation
+        testOperation(str, res);
+        str = "1/ + 3/4";           // invalid fraction
+        testOperation(str, res);
+        str = "1/5 z";              // unknown operation
+        testOperation(str, res);
+        str = "1/5 / 0";              // divide by zero
+        testOperation(str, res);
+
+        // tests for system commands...
 
 
+        // scanner object for reading command line
+
+        Scanner sc = new Scanner(System.in);
+        String input;
+        Boolean b = true;
+
+        while (b) {
+
+            input = sc.nextLine();
+
+            if (input.equals("quit") || input.equals("q")) {
+                b = false;
+                break;
+            }
+
+            Fraction ret = fc.evaluate(new Fraction(0,1), input);
+            System.out.println();
+            System.out.println("\t>> Returned Result:\t" + ret);
+            System.out.println();
+
+        }
+
+
+        System.out.println();
+        System.out.println("EXITING PROGRAM");
 
     }
 
@@ -111,8 +151,11 @@ public class FractionCalculatorTest {
 
         System.out.println("Performing Operation:\t\t" + s);
         System.out.println("Expected Result:\t\t\t" + r);
+
+        Fraction ret = fc.evaluate(new Fraction(0,1), s);
         System.out.println();
-        System.out.println("\t>> Equal: " + r.equals(fc.evaluate(new Fraction(0,1), s)));
+        System.out.println("\t>> Returned Result:\t" + ret);
+        System.out.println("\t>> Equal: \t\t" + r.equals(ret));
         System.out.println();
     }
 

@@ -20,6 +20,15 @@ public class FractionCalculator {
         this.hasOperation = false;      // start without operation
     }
 
+    /* main */
+    /*
+    public static void main(String[] args) {
+
+
+
+    }
+    */
+
     /* class methods */
     // override object toString method
 
@@ -71,15 +80,17 @@ public class FractionCalculator {
     /* main class methods */
     // store given operation. if an operation is already present in the calculator, the input is invalid.
 
-    private void storeOperation(char c) {
+    private boolean storeOperation(char c) {
 
         if (!this.hasOperation) {       // no current operation present
             this.setOperation(c);       // okay to set
+            return true;
         } else {                        // input error, operation already specified
             System.out.println();
             System.out.println("*** Input error: More than one operation specified consecutively ***");
             System.out.println();
             this.resetOperation();
+            return false;
         }
     }
 
@@ -115,7 +126,8 @@ public class FractionCalculator {
 
         //for (String op : ops) { // array iteration
         int i = 0;
-        while (i<ops.length) {
+        boolean err = false;
+        while (i<ops.length && !err) {
             String op = ops[i];
             // for each token, check if it is an operation of fraction, determined by spacing and '/'
             // if an operation is found, perform unary operations and store binary operations in the calculator
@@ -131,7 +143,12 @@ public class FractionCalculator {
 
                 if (op.length() == 1) {     // op is divide operation
 
-                    storeOperation(op.charAt(0));
+                    if (storeOperation(op.charAt(0))) {
+                        //pass
+                    } else {
+                        resetFractionCalculator();
+                        break;
+                    }
 
                 } else {                    // is fraction or input error
 
@@ -164,6 +181,8 @@ public class FractionCalculator {
                         System.out.println();
                         System.out.println("*** Invalid input, incorrect usage of '/' operator. ***");
                         System.out.println();
+                        err = true;
+                        ret = new Fraction(0, 1);
                     }
                 }
 
@@ -175,7 +194,11 @@ public class FractionCalculator {
                 // if the operation is a recognised mathematical binary operation and is only 1 character long
                 // then the operation is valid and should be stored in the calculator
 
-                storeOperation(op.charAt(0));
+                if (storeOperation(op.charAt(0))) {
+                    //pass
+                } else {
+                    break;
+                }
 
             } else if (((op.toLowerCase().contains("a")
                         || op.toLowerCase().contains("n")) && op.length() == 1)
@@ -185,7 +208,11 @@ public class FractionCalculator {
                 // if the operation is a recognised mathematical unary operation in either the single character
                 // or 3 character forms, perform this operation on the stored value of the calculator
 
-                storeOperation(op.charAt(0));           // store first character of operation, valid for 3 letter forms
+                if (storeOperation(op.charAt(0))) {
+                    //pass
+                } else {
+                    break;
+                }           // store first character of operation, valid for 3 letter forms
                 ret = performOperation(getValue());
 
             }  else if (((op.toLowerCase().contains("c")
@@ -195,7 +222,11 @@ public class FractionCalculator {
 
                 // system command
 
-                storeOperation(op.charAt(0));
+                if (storeOperation(op.charAt(0))) {
+                    //pass
+                } else {
+                    break;
+                }
 
             } else {                                                                // integer or invalid
 
@@ -220,6 +251,8 @@ public class FractionCalculator {
                     System.out.println();
                     System.out.println("*** Invalid input: " + op + " ***");
                     System.out.println();
+                    err = true;
+                    ret = new Fraction(0, 1);
                 }
 
             }
