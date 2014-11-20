@@ -1,78 +1,113 @@
 /**
  * Created by Basil on 06/11/2014.
- * FractionCalculator object
+ * FractionCalculator object for cw2
  */
 
-import java.util.Scanner;           // for command line input
+import java.util.Scanner;           // scanner class for command line input
 
 public class FractionCalculator {
 
-    /* class variables */
+    /*** constants ***/
+
+    private static final Fraction ZERO = new Fraction(0,1); // the zero fraction
+    private static final char NOP = '0';                    // the null operation
+
+    /*** variables ***/
 
     private Fraction value;         // the current value of the calculator, initialised to zero.
     private char operation;         // the current operation of the calculator
     private boolean hasOperation;   // false if there is no saved operation. When false, any fraction read from the
-                                    // command line will be stored in the current value of the calculator
+                                    // command line will be stored in the current value of the calculator, otherwise
+                                    // the stored operation will be performed immediately
     private boolean debugMode;      // test flag to control level of logging to console
 
-    /* constructors */
+    /*** constructors ***/
 
-    public FractionCalculator() {
-        this.value = new Fraction(0,1); // initialise calculator value to zero
-        this.operation = '0';           // zero represents null operation
+    public FractionCalculator() {       // default constructor
+        this.value = ZERO;              // initialise calculator value to zero
+        this.operation = NOP;           // initialise calculator operation to no operation
         this.hasOperation = false;      // start without operation
     }
 
-    // debug constructor with additional logging
-
-    public FractionCalculator(boolean debug) {
-
+    public FractionCalculator(boolean debug) {  // debug constructor
+        this();                                 // call default constructor
+        this.debugMode = debug;                 // set flag to print additional logging
+        log("\nStarting in DEBUG mode...\n");
     }
 
-    /* main */
+    /*** main ***/
+
+    // at start of execution, initialise Fraction Calculator object and
+    // start main program
 
     public static void main(String[] args) {
-
-        FractionCalculator fc = new FractionCalculator();   // initialise
-        fc.start();                                         // start main input loop
-
+        FractionCalculator fc = new FractionCalculator();         // initialise
+        //FractionCalculator fc = new FractionCalculator(true);       // debug mode if required
+        fc.start();                                                 // start main input loop
     }
+
+    // begin program
 
     private void start() {
 
-        Scanner sc = new Scanner(System.in);
-        String input;
-        boolean isRunning = true;
-        Fraction runningTotal = new Fraction(0,1);
+        // start input loop for user
+        // exit upon command 'quit' and finish program
+
+        Scanner sc = new Scanner(System.in);        // command line input mechanism
+        String input;                               // input string
+        boolean isRunning = true;                   // loop control, set false to exit program
+
+        // introduce calculator and start input loop
+
+        System.out.println();
+        System.out.println("\t*********************************");
+        System.out.println("\t****** FRACTION CALCULATOR ******");
+        System.out.println("\t****** By Basil Mason. **********");
+        System.out.println("\t*********************************");
+        System.out.println();
+        System.out.println(" >> Please enter fractions and commands");
+        System.out.println(" >> at the prompts provided below.");
+        System.out.println();
+        System.out.println(" >> COMMAND LIST");
+        System.out.println();
+        System.out.println(" >>\t+\t\t\t : add");
+        System.out.println(" >>\t-\t\t\t : subtract");
+        System.out.println(" >>\t*\t\t\t : multiply");
+        System.out.println(" >>\t/\t\t\t : divide");
+        System.out.println(" >>\ta, A, abs\t : absolute value");
+        System.out.println(" >>\tn, N, neg\t : negate");
+        System.out.println(" >>\tc, C, clear\t : reset calculator");
+        System.out.println(" >>\tq, Q, quit\t : exit program");
+        System.out.println();
+        System.out.println(" >> 0");
+
+        // input loop
 
         while(isRunning) {
 
-            System.out.print(">> ");
+            System.out.print(" >> ");   // prompt
             input = sc.nextLine();      // read input
 
-            if (input.equals("quit") || input.equals("q")) {
-                isRunning = false;
-                System.out.println("\nExiting Program.");
+            if (input.equals("quit") || input.equals("q")) {        // test for quit command
+                isRunning = false;                                  // set false to exit program
+                System.out.println("\nExiting Program.");           // display exit message
                 System.out.println("Goodbye.");
                 break;
-            } else {
-
-                runningTotal = evaluate(runningTotal, input);
-                System.out.println(">> " + runningTotal.toString());
-
+            } else {                                                // process input
+                setValue(evaluate(this.value, input));              // call core evaluate method
+                System.out.println(" >> " + this.value.toString()); // display calculator result
             }
         }
 
-
     }
 
-    /* class methods */
-    // override object toString method
+    /*** methods ***/
+    // override object toString() method
 
     @Override
     public String toString() {
 
-        String str = (!this.hasOperation) ? "null" : "" + this.operation;   //  if no operation print null
+        String str = (!this.hasOperation) ? "none" : "" + this.operation;   //  if no operation print none
 
         // represent FractionCalculator state by printing current value and saved operation
         return "Calculator value: " + this.value.toString()
@@ -101,12 +136,12 @@ public class FractionCalculator {
     /* reset methods */
 
     private void resetOperation() {
-        this.operation = '0';    // null operation
+        this.operation = NOP;    // null operation
         this.hasOperation = false;
     }
 
     private void resetValue() {
-        setValue(new Fraction(0, 1));
+        setValue(ZERO);
     }
 
     private void resetFractionCalculator() {
@@ -114,19 +149,20 @@ public class FractionCalculator {
         resetValue();
     }
 
-    /* main class methods */
+    /* core methods */
+
     // store given operation. if an operation is already present in the calculator, the input is invalid.
 
     private boolean storeOperation(char c) {
 
-        if (!this.hasOperation) {       // no current operation present
-            this.setOperation(c);       // okay to set
+        if (!this.hasOperation) {       // if no current operation present
+            this.setOperation(c);       // set operation
             return true;
         } else {                        // input error, operation already specified
             System.out.println();
             System.out.println("*** Input error: More than one operation specified consecutively ***");
             System.out.println();
-            this.resetOperation();
+            this.resetFractionCalculator(); // reset calculator
             return false;
         }
     }
@@ -143,9 +179,10 @@ public class FractionCalculator {
 
         // variables
 
-        int num, denom, idx;                //  values for return fraction and operation parsing
-        Fraction ret = new Fraction(0,1);   //  return fraction to be determined
+        int i = 0, num, denom, idx;             //  values for return fraction and operation parsing
+        Fraction ret = fraction;            //  return fraction to be determined
         String[] ops;                       //  array to hold input operations and fractions
+        boolean err = false;                // flag for error checking, if set to true, parsing will stop
 
         setValue(fraction);                 //  initialise calculator with given value
 
@@ -159,21 +196,18 @@ public class FractionCalculator {
             ops[0] = inputString;
         }
 
-        // loop thought operations and fractions and perform necessary operation
-
-        int i = 0;
-        boolean err = false;
+        // loop through operations and fractions and perform necessary operation
 
         while (i < ops.length && !err) {
 
             String op = ops[i];
 
-            // for each token, check if it is an operation of fraction, determined by spacing and '/'
+            // for each token, check if it is an operation or fraction, determined by spacing and '/'
             // if an operation is found, perform unary operations and store binary operations in the calculator
             // if an fraction is found and a stored operation is present, perform that operation on the current
             // value and fraction, else store the fraction
 
-            System.out.println("\t>> Token: " + op);
+            log("\t>> Token: " + op);
 
             // parse token for operations or fractions
             // first check for / as this has multiple meanings and determines fractions
@@ -183,9 +217,10 @@ public class FractionCalculator {
                 if (op.length() == 1) {     // op is divide operation
 
                     if (storeOperation(op.charAt(0))) {
-                        //pass
+                        //pass, successfully stored operation
                     } else {
-                        resetFractionCalculator();
+                        resetFractionCalculator();  // error storing operation
+                        err = true;                 // end parsing loop
                         break;
                     }
 
@@ -214,14 +249,14 @@ public class FractionCalculator {
                             ret = new Fraction(num, denom);                     // set current value of calculator to input
                         }
 
-                    } catch (NumberFormatException e) { // if the '/' operation is first or last the substring calls with
+                    } catch (NumberFormatException e) {     // if the '/' operation is first or last the substring calls with
                                                             // raise a index exception. It also means the input is invalid
                                                             // value return will be zero by default
                         System.out.println();
                         System.out.println("*** Invalid input, incorrect usage of '/' operator. ***");
                         System.out.println();
                         err = true;
-                        ret = new Fraction(0, 1);
+                        ret = ZERO;
                     }
                 }
 
@@ -236,6 +271,7 @@ public class FractionCalculator {
                 if (storeOperation(op.charAt(0))) {
                     //pass
                 } else {
+                    err = true;
                     break;
                 }
 
@@ -246,12 +282,17 @@ public class FractionCalculator {
 
                 // if the operation is a recognised mathematical unary operation in either the single character
                 // or 3 character forms, perform this operation on the stored value of the calculator
+                // store first character of operation, valid for 3 letter forms
 
                 if (storeOperation(op.charAt(0))) {
                     //pass
                 } else {
+                    err = true;
                     break;
-                }           // store first character of operation, valid for 3 letter forms
+                }
+
+                // perform operation immediately for unary operators
+
                 ret = performOperation(getValue());
 
             }  else if (((op.toLowerCase().contains("c")
@@ -259,11 +300,12 @@ public class FractionCalculator {
                         || (op.contains("clear") && op.length() == 5)
                         || (op.contains("quit") && op.length() == 4)) {             // program commands
 
-                // system command
+                // perform program commands. either clear calculator or quit
 
                 if (storeOperation(op.charAt(0))) {
-                    //pass
+                    ret = performOperation(ZERO); // call perform method to either reset or quit
                 } else {
+                    err = true;
                     break;
                 }
 
@@ -277,12 +319,12 @@ public class FractionCalculator {
 
                 try {
 
-                    Fraction temp = new Fraction(Integer.parseInt(op), 1);
+                    Fraction integer = new Fraction(Integer.parseInt(op), 1);  // construct Fraction from integer
 
                     if (this.hasOperation) {
-                        ret = performOperation(temp);   // perform operation with integer
+                        ret = performOperation(integer);   // perform operation with integer
                     } else {
-                        ret = temp;                     // set current value of calculator to input
+                        ret = integer;                     // set current value of calculator to input
                     }
 
                 } catch (NumberFormatException e) {                 // if the input is not a number, it is invalid
@@ -291,14 +333,14 @@ public class FractionCalculator {
                     System.out.println("*** Invalid input: " + op + " ***");
                     System.out.println();
                     err = true;
-                    ret = new Fraction(0, 1);
+                    ret = ZERO;
                 }
 
             }
 
             setValue(ret);                                      //  update current value of calculator before next operation
-            System.out.println("\t\t>> " + this.toString());     // print current state of calculator
-            i++;
+            log("\t\t>> " + this.toString());     // print current state of calculator
+            i++;    // increment to iterate through op string array
         }
 
         return ret; // return result of all operations
@@ -336,23 +378,23 @@ public class FractionCalculator {
 
             case 'c':
                 resetFractionCalculator();
-                return new Fraction(0,1);
+                return ZERO;
 
             case 'q':
-                return new Fraction(0,1);
+                return ZERO;
 
             default:
                 System.out.println();
                 System.out.println("*** Invalid Operation ***");
                 System.out.println();
                 resetFractionCalculator();
-                return new Fraction(0,1);   //  return zero fraction
+                return ZERO;   //  return zero fraction
 
         }
 
     }
 
-    // logger
+    // logger for debug mode
 
     private void log(String s) {
         if (debugMode) System.out.println(s);
