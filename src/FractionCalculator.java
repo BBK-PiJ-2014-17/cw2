@@ -3,6 +3,8 @@
  * FractionCalculator object
  */
 
+import java.util.Scanner;           // for command line input
+
 public class FractionCalculator {
 
     /* class variables */
@@ -11,6 +13,7 @@ public class FractionCalculator {
     private char operation;         // the current operation of the calculator
     private boolean hasOperation;   // false if there is no saved operation. When false, any fraction read from the
                                     // command line will be stored in the current value of the calculator
+    private boolean debugMode;      // test flag to control level of logging to console
 
     /* constructors */
 
@@ -20,14 +23,48 @@ public class FractionCalculator {
         this.hasOperation = false;      // start without operation
     }
 
+    // debug constructor with additional logging
+
+    public FractionCalculator(boolean debug) {
+
+    }
+
     /* main */
-    /*
+
     public static void main(String[] args) {
 
+        FractionCalculator fc = new FractionCalculator();   // initialise
+        fc.start();                                         // start main input loop
+
+    }
+
+    private void start() {
+
+        Scanner sc = new Scanner(System.in);
+        String input;
+        boolean isRunning = true;
+        Fraction runningTotal = new Fraction(0,1);
+
+        while(isRunning) {
+
+            System.out.print(">> ");
+            input = sc.nextLine();      // read input
+
+            if (input.equals("quit") || input.equals("q")) {
+                isRunning = false;
+                System.out.println("\nExiting Program.");
+                System.out.println("Goodbye.");
+                break;
+            } else {
+
+                runningTotal = evaluate(runningTotal, input);
+                System.out.println(">> " + runningTotal.toString());
+
+            }
+        }
 
 
     }
-    */
 
     /* class methods */
     // override object toString method
@@ -124,11 +161,13 @@ public class FractionCalculator {
 
         // loop thought operations and fractions and perform necessary operation
 
-        //for (String op : ops) { // array iteration
         int i = 0;
         boolean err = false;
-        while (i<ops.length && !err) {
+
+        while (i < ops.length && !err) {
+
             String op = ops[i];
+
             // for each token, check if it is an operation of fraction, determined by spacing and '/'
             // if an operation is found, perform unary operations and store binary operations in the calculator
             // if an fraction is found and a stored operation is present, perform that operation on the current
@@ -311,6 +350,12 @@ public class FractionCalculator {
 
         }
 
+    }
+
+    // logger
+
+    private void log(String s) {
+        if (debugMode) System.out.println(s);
     }
 
 }
