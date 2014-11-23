@@ -1,6 +1,8 @@
+
 /**
  * Created by Basil on 06/11/2014.
  * FractionCalculator Tester class
+ * Requires main class to be commented out in FractionCalculator class
  */
 
 import java.util.Scanner;
@@ -123,8 +125,12 @@ public class FractionCalculatorTest {
         String input;
         Boolean b = true;
 
+        System.out.println();
+        System.out.println("Please enter tests at the prompt");
+
         while (b) {
 
+            System.out.print(" >> ");
             input = sc.nextLine();
 
             if (input.equals("quit") || input.equals("q")) {

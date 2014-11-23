@@ -1,8 +1,7 @@
-import com.sun.org.apache.xpath.internal.SourceTree;
 
 /**
  * Created by keith for the second coursework assignment.
- * Added to by Basil to test additional functionality of Fraction class.
+ * Added to by basil to test additional functionality of Fraction class - Nov 14
  */
 
 public class FractionTest {

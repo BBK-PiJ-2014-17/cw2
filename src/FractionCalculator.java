@@ -1,3 +1,4 @@
+
 /**
  * Created by Basil on 06/11/2014.
  * FractionCalculator object for cw2
@@ -41,8 +42,8 @@ public class FractionCalculator {
     // start main program
 
     public static void main(String[] args) {
-        FractionCalculator fc = new FractionCalculator();         // initialise
-        //FractionCalculator fc = new FractionCalculator(true);       // debug mode if required
+        FractionCalculator fc = new FractionCalculator();           // initialise
+        //FractionCalculator fc = new FractionCalculator(true);     // debug mode if required
         fc.start();                                                 // start main input loop
     }
 
@@ -172,14 +173,17 @@ public class FractionCalculator {
     public Fraction evaluate(Fraction fraction, String inputString) {
 
         /**
-         * Method Structure:
-         *
-         *
+         * 1. Assign starting value of calculator to given fraction
+         * 2. Parse input string and split on spaces
+         * 3. Loop through array of splits and parse tokens to interpret
+         * 4. For each toke, determine if it is a fraction or operation
+         * 5. Save operation if binary op, perform operation if unary op
+         * 6. return calculated value after all input tokens performed.
          */
 
         // variables
 
-        int i = 0, num, denom, idx;             //  values for return fraction and operation parsing
+        int i = 0, num, denom, idx;         //  values for return fraction and operation parsing
         Fraction ret = fraction;            //  return fraction to be determined
         String[] ops;                       //  array to hold input operations and fractions
         boolean err = false;                // flag for error checking, if set to true, parsing will stop

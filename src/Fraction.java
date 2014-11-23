@@ -1,6 +1,7 @@
+
 /**
  * Created by keith for the second coursework assignment.
- * Added to by Basil in response to tasks stated in assignment 2.
+ * Added to by basil in response to tasks stated in assignment 2 - Nov 14
  */
 
 public class Fraction {
@@ -92,7 +93,7 @@ public class Fraction {
     public Fraction divide(Fraction other) {
 
         // divide by zero errors will be picked up because the reciprocal fraction will be constructed as n/0
-        // causing an error creation of the fraction instance.
+        // causing an error during creation of the fraction instance.
 
         Fraction recip = new Fraction(other.getDenominator(), other.getNumerator()); // reciprocal fraction
         return this.multiply(recip);
